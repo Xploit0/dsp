@@ -1,0 +1,44 @@
+import pandas as pd
+
+# Input Data
+data = {
+    "OrderID": [1, 2, 3, 4, 5],
+    "Product": ["Laptop", "Mouse", "Keyboard", "Monitor", "Laptop"],
+    "Quantity": [2, 5, 3, 1, 1],
+    "Price": [1500, 20, 50, 200, 1500],
+    "OrderDate": [
+        "2023-01-01 10:15",
+        "2023-01-01 12:30",
+        "2023-01-02 09:00",
+        "2023-01-03 14:45",
+        "2023-01-03 16:00",
+    ],
+}
+
+# Load data into DataFrame
+df = pd.DataFrame(data)
+
+# Transforming Data
+# 1. Convert OrderDate to datetime
+df["OrderDate"] = pd.to_datetime(df["OrderDate"])
+
+# 2. Add a Total column (Quantity * Price)
+df["Total"] = df["Quantity"] * df["Price"]
+
+# 3. Filter data (e.g., orders after 2023-01-02)
+filtered_df = df[df["OrderDate"] > "2023-01-02"]
+
+# 4. Group by Product and calculate total revenue and quantity sold
+grouped_df = df.groupby("Product").agg(
+    TotalRevenue=pd.NamedAgg(column="Total", aggfunc="sum"),
+    TotalQuantity=pd.NamedAgg(column="Quantity", aggfunc="sum"),
+)
+
+# Output
+print("Original Data:")
+print(df)
+print("\nFiltered Data (Orders after 2023-01-02):")
+print(filtered_df)
+print("\nGrouped Data (Revenue and Quantity by Product):")
+print(grouped_df)
+

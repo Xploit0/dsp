@@ -1,0 +1,26 @@
+import json
+
+# Input and Output File Paths
+input_file = "data.json"  # JSON file to convert
+output_file = "data1.horus"  # HORUS-formatted output
+
+# Load the JSON Data
+with open(input_file, mode="r") as jsonfile:
+    data = json.load(jsonfile)
+
+# Write to HORUS Format
+with open(output_file, mode="w") as horusfile:
+    # Write Header (use the first record's keys as the header)
+    horusfile.write("<Header>\n")
+    if data:
+        for key in data[0]:
+            horusfile.write(f"{key}={data[0][key]}\n")
+    horusfile.write("\n<Details>\n")
+    
+    # Write Details for each record
+    for record in data:
+        for key, value in record.items():
+            horusfile.write(f"{key}={value}\n")
+        horusfile.write("\n")  # Separate each record with a newline
+
+print(f"Data converted to HORUS format and saved to {output_file}")

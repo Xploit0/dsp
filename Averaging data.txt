@@ -1,0 +1,9 @@
+import pandas as pd
+inputfile="sample_large_data.csv"
+inputFileData=pd.read_csv(inputfile)
+print('++++++++++++++++++++++++++input data++++++++++++++++++++++++++++++')
+print(inputFileData)
+print('+++++++++++++++++++++++end input data++++++++++')
+processData=inputFileData
+MeanData=processData.groupby([ 'Gender'])['Salary'].mean()
+print(MeanData)

@@ -1,0 +1,72 @@
+import pandas as pd
+import sqlite3
+from datetime import datetime, timedelta
+import uuid
+
+# Create a SQLite database (or connect to an existing one)
+conn = sqlite3.connect("time_hub.db")
+
+# Create Time Hub
+def create_time_hub():
+    time_data = []
+    base_time = datetime(2023, 1, 1, 0, 0, 0)  # Starting point for time data
+    for i in range(100):  # Generate 100 timestamps
+        current_time = base_time + timedelta(minutes=i * 15)
+        time_id = str(uuid.uuid4())
+        time_data.append({"TimeID": time_id, "Timestamp": current_time})
+    time_hub = pd.DataFrame(time_data)
+    return time_hub
+
+# Create Time Satellites
+def create_time_satellites(time_hub):
+    time_satellites = []
+    for _, row in time_hub.iterrows():
+        timestamp = row["Timestamp"]
+        time_satellites.append({
+            "TimeID": row["TimeID"],
+            "Year": timestamp.year,
+            "Month": timestamp.month,
+            "Day": timestamp.day,
+            "Hour": timestamp.hour,
+            "Minute": timestamp.minute
+        })
+    time_satellite_df = pd.DataFrame(time_satellites)
+    return time_satellite_df
+
+# Create Time Links
+def create_time_links(time_hub):
+    time_zones = ["UTC", "EST", "PST", "CET"]
+    time_links = []
+    for _, row in time_hub.iterrows():
+        timestamp = row["Timestamp"]
+        for zone in time_zones:
+            link_id = str(uuid.uuid4())
+            time_links.append({
+                "LinkID": link_id,
+                "TimeID": row["TimeID"],
+                "TimeZone": zone,
+                "AdjustedTime": timestamp  # For simplicity, no real adjustment is made
+            })
+    time_link_df = pd.DataFrame(time_links)
+    return time_link_df
+
+# Generate Data
+time_hub = create_time_hub()
+time_satellites = create_time_satellites(time_hub)
+time_links = create_time_links(time_hub)
+
+# Save to SQLite
+time_hub.to_sql("TimeHub", conn, if_exists="replace", index=False)
+time_satellites.to_sql("TimeSatellites", conn, if_exists="replace", index=False)
+time_links.to_sql("TimeLinks", conn, if_exists="replace", index=False)
+
+# Display Results
+print("Time Hub:")
+print(time_hub.head())
+print("\nTime Satellites:")
+print(time_satellites.head())
+print("\nTime Links:")
+print(time_links.head())
+
+# Close connection
+conn.close()

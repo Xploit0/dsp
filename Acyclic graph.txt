@@ -1,0 +1,18 @@
+library(igraph)
+
+# Create a directed acyclic graph
+nodes <- c("A", "B", "C", "D", "E")
+edges <- c("A", "B", "A", "C", "B", "D", "C", "E", "D", "E")
+
+# Build the graph
+graph <- graph(edges = edges, directed = TRUE)
+
+# Check if the graph is acyclic
+if (is.dag(graph)) {
+  print("The graph is acyclic (DAG).")
+} else {
+  print("The graph contains cycles.")
+}
+
+# Plot the graph
+plot(graph, vertex.color="skyblue", vertex.size=30, edge.arrow.size=0.5, vertex.label.cex=1.2, main="Acyclic Graph")

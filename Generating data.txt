@@ -1,0 +1,36 @@
+import numpy as np
+import pandas as pd
+
+# Generate random numerical data
+np.random.seed(42)  # For reproducibility
+data = {
+    "ID": range(1, 101),
+    "Age": np.random.randint(18, 60, size=100),
+    "Salary": np.random.randint(30000, 120000, size=100),
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+print(df.head())
+
+# Generate a time-series dataset
+date_range = pd.date_range(start="2023-01-01", periods=100, freq="D")
+time_series_data = {
+    "Date": date_range,
+    "Temperature": np.random.uniform(15, 35, size=100),
+}
+
+# Create DataFrame
+time_series_df = pd.DataFrame(time_series_data)
+print(time_series_df.head())
+
+# Generate data with categories
+categories = ["Electronics", "Clothing", "Groceries"]
+categorical_data = {
+    "ID": range(1, 101),
+    "Category": np.random.choice(categories, size=100),
+    "Sales": np.random.randint(1, 1000, size=100),
+}
+
+categorical_df = pd.DataFrame(categorical_data)
+print(categorical_df.head())

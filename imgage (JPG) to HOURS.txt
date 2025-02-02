@@ -1,0 +1,45 @@
+from PIL import Image, ExifTags
+# Input and Output File Paths
+input_file = "img.jpg"  # Input JPEG file
+output_file = "image.horus"  # Output HORUS file
+# Open the image
+with Image.open(input_file) as img:
+    # Extract Metadata
+    metadata = {
+        "Filename": input_file,
+        "Format": img.format,
+        "Mode": img.mode,
+        "Size": f"{img.size[0]}x{img.size[1]}",
+        "Color Depth": len(img.getbands()),
+    }
+    # Extract EXIF data (if available)
+    exif_data = img._getexif()
+    if exif_data:
+        metadata["EXIF"] = {}
+        for tag, value in exif_data.items():
+            decoded_tag = ExifTags.TAGS.get(tag, tag)
+            metadata["EXIF"][decoded_tag] = value
+    # Prepare Pixel Data (Optional - comment out if not needed)
+    pixel_data = []
+    for y in range(img.size[1]):  # Height
+        row = []
+        for x in range(img.size[0]):  # Width
+            row.append(img.getpixel((x, y)))
+        pixel_data.append(row)
+# Write to HORUS Format
+with open(output_file, mode="w") as horusfile:
+    # Write Metadata
+    horusfile.write("<Header>\n")
+    for key, value in metadata.items():
+        if key == "EXIF":
+            horusfile.write(f"EXIF Metadata:\n")
+            for exif_key, exif_value in value.items():
+                horusfile.write(f"{exif_key}={exif_value}\n")
+        else:
+            horusfile.write(f"{key}={value}\n")
+    horusfile.write("\n<Details>\n")
+    # Write Pixel Data (Optional)
+    horusfile.write("Pixel Data (Row by Row):\n")
+    for row in pixel_data:
+        horusfile.write(f"{row}\n")
+print(f"Image converted to HORUS format and saved to {output_file}")

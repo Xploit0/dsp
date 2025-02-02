@@ -1,0 +1,31 @@
+import csv
+
+# Input and Output File Paths
+input_file = "HORUS-CSV-Country.csv"  # CSV file to convert
+output_file = "data.horus"  # HORUS-formatted output
+
+# Delimiter in the CSV file
+delimiter = ','
+
+# Read the CSV File
+# Specify the encoding when opening the file
+with open(input_file, mode='r', encoding='latin-1') as csvfile: # Changed to 'latin-1', you may need to adjust this.
+    reader = csv.DictReader(csvfile, delimiter=delimiter)
+    rows = list(reader)  # Store all rows from the CSV
+
+# Write to HORUS Format
+with open(output_file, mode='w') as horusfile:
+    # Write Header
+    horusfile.write("<Header>\n")
+    if rows:
+        for key in rows[0].keys(): # Use the first row's keys as fields
+            horusfile.write(f"{key}={rows[0][key]}\n")
+    horusfile.write("\n<Details>\n")
+    
+    # Write Details for each row
+    for row in rows:
+        for key, value in row.items():
+            horusfile.write(f"{key}={value}\n")
+        horusfile.write("\n")  # Separate each record with a newline
+
+print(f"Data converted to HORUS format and saved to {output_file}")

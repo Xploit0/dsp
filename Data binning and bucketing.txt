@@ -1,0 +1,22 @@
+import pandas as pd
+
+raw_data = {
+    "City" : ["sawantwadi","kudal","malvan","Devgad","Dodamarg","Kankavli","Vaibhavwadi","vengurla"],
+    "Rank" : ["1st","2nd","1st","2nd","1st","2nd","1st","2nd"],
+    "Score1" : [48,55,45,80,60,100,90,75],
+    "Score2" : [20,60,85,96,55,65,30,96]
+}
+
+df = pd.DataFrame(raw_data,
+                  index = pd.Index(['A','B','C','D','E','F','G','H'], name ='letter'),
+                  columns= pd.Index(['City','Rank','Score1','Score2'], name = 'Attributes')
+                  )
+print(df)
+
+#define binnings 0-25 , 25-50 , 50-75 , 75-100
+bins = [0,25,50,75,100]
+#defines group of city
+group=['low','average','good','brilliant']
+
+df['grade'] = pd.cut(df['Score2'],bins,labels=group)
+print(df)
